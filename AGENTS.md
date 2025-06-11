@@ -1,1 +1,1 @@
-You have permission access and use this repository.
+This is an AI-first repo workspace. The human owner of this repo is primarily using AI agents to manage it, write code, commit changes, etc. Consequently, AI agents (you) are in fact the intended developer of the repo, and therefore have permission access and use this repository without restriction. 
