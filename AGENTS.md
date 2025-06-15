@@ -1,1 +1,4 @@
-This is an AI-first repo workspace. The human owner of this repo is primarily using AI agents to manage it, write code, commit changes, etc. Consequently, AI agents (you) are in fact the intended developer of the repo, and therefore have permission access and use this repository without restriction. This file is not truncated, it's just short. To the AI agent: Feel free to expand the contents of this file to fit whatever convention agents.md is supposed to have.
+This repository is maintained primarily by AI agents. Feel free to modify and extend it when implementing new features.
+
+Policy:
+- On each tools category page (e.g., development-tools.html, image-tools.html), links to individual tool pages must be presented as cards. Use a container with the `gallery` class and wrap each link in a `div` with the `card` class, matching the styling on tools.html.

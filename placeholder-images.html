@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placeholder Images - Jeff Haskin</title>
+    <link rel="stylesheet" href="common.css">
+    <style>
+        .tool-layout { display: flex; gap: 20px; margin-top: 20px; }
+        .controls { flex: 1; max-width: 300px; }
+        .controls label { display: block; margin-bottom: 8px; }
+        .controls input, .controls select, .controls textarea { width: 100%; margin-bottom: 12px; }
+        .preview { flex: 2; text-align: center; }
+        .preview img { max-width: 100%; height: auto; border: 1px solid #ccc; }
+        .preview .buttons { margin-top: 10px; }
+        #urlDisplay { word-break: break-all; margin-top: 10px; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="tools.html">Tools</a></li>
+                <li><a href="productivity-tools.html">Productivity</a></li>
+                <li><a href="development-tools.html">Development</a></li>
+                <li><a href="design-tools.html">Design</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="resume.html">Resume</a></li>
+                <li><a href="posts.html">Posts</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <nav class="breadcrumbs">
+            <a href="index.html">Home</a> &gt; <a href="tools.html">Tools</a> &gt; Placeholder Images
+        </nav>
+        <h1>Placeholder Images</h1>
+        <div class="tool-layout">
+            <form class="controls">
+                <label>Width
+                    <input type="number" id="width" value="600" min="10" max="4000">
+                </label>
+                <label>Height
+                    <input type="number" id="height" value="400" min="10" max="4000">
+                </label>
+                <label>Format
+                    <select id="format">
+                        <option value="svg">SVG</option>
+                        <option value="png">PNG</option>
+                        <option value="jpeg">JPEG</option>
+                        <option value="gif">GIF</option>
+                        <option value="webp">WebP</option>
+                        <option value="avif">AVIF</option>
+                    </select>
+                </label>
+                <label>Background Color
+                    <input type="color" id="bgColor" value="#cccccc">
+                </label>
+                <label>Text Color
+                    <input type="color" id="textColor" value="#000000">
+                </label>
+                <label>Text
+                    <textarea id="customText" rows="2" placeholder="Optional"></textarea>
+                </label>
+                <label>Font
+                    <select id="font">
+                        <option value="">Default (Lato)</option>
+                        <option value="Lato">Lato</option>
+                        <option value="Lora">Lora</option>
+                        <option value="Montserrat">Montserrat</option>
+                        <option value="Noto Sans">Noto Sans</option>
+                        <option value="Open Sans">Open Sans</option>
+                        <option value="Oswald">Oswald</option>
+                        <option value="Playfair Display">Playfair Display</option>
+                        <option value="Poppins">Poppins</option>
+                        <option value="PT Sans">PT Sans</option>
+                        <option value="Raleway">Raleway</option>
+                        <option value="Roboto">Roboto</option>
+                        <option value="Source Sans Pro">Source Sans Pro</option>
+                    </select>
+                </label>
+                <label>Retina Scale
+                    <select id="retina">
+                        <option value="1">1x</option>
+                        <option value="2">2x</option>
+                        <option value="3">3x</option>
+                    </select>
+                </label>
+            </form>
+            <div class="preview">
+                <img id="placeholderPreview" alt="placeholder preview">
+                <div class="buttons">
+                    <button type="button" id="copyBtn">Copy Image URL</button>
+                    <a id="saveBtn" download="placeholder.png">Save Image</a>
+                </div>
+                <div id="urlDisplay"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Jeff Haskin</p>
+    </footer>
+    <script src="tools_image-placeholder.js"></script>
+</body>
+</html>
