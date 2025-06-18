@@ -4,8 +4,8 @@ body {
     padding: 0;
     background-color: #f9f9f9;
     color: #333;
-    margin-left: 50px;
-    margin-right: 50px;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 header {

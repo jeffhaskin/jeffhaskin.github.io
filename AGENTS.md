@@ -5,3 +5,4 @@ Policy:
 - HTML pages go in the `/templates` folder.
 - CSS and Javascript files go in the `/static` folder.
 - Tool pages go in the `/tools/tool_pages` folder.
+- Currently, the nav bar should only have the following options: Home, Tools, Portfolio, Resume, Posts
