@@ -1,0 +1,24 @@
+.math-flow-container {
+  height: 80vh;
+}
+.toolbar, .import-export {
+  position: absolute;
+  top: 10px;
+  background: rgba(255,255,255,0.9);
+  padding: 5px;
+  border-radius: 4px;
+  z-index: 10;
+}
+.toolbar { left: 10px; }
+.import-export { right: 10px; }
+.toolbar button, .import-export button {
+  margin-right: 5px;
+}
+.number-node, .operation-node, .display-node {
+  padding: 5px;
+  background: #fff;
+  border: 1px solid #555;
+  border-radius: 5px;
+  min-width: 120px;
+  text-align: center;
+}
