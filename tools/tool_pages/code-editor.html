@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Editor - Jeff Haskin</title>
+    <link rel="stylesheet" href="../../static/common.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.9/lib/codemirror.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.9/theme/darcula.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.9/theme/default.css">
+    <link rel="stylesheet" href="../../static/tools_code-editor.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="../../templates/index.html">Home</a></li>
+                <li><a href="../../templates/tools.html">Tools</a></li>
+                <li><a href="../../templates/portfolio.html">Portfolio</a></li>
+                <li><a href="../../templates/resume.html">Resume</a></li>
+                <li><a href="../../templates/posts.html">Posts</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <nav class="breadcrumbs">
+            <a href="../../templates/index.html">Home</a> &gt; <a href="../../templates/tools.html">Tools</a> &gt; Code Editor
+        </nav>
+        <h1>Code Editor</h1>
+        <div class="editor-container">
+            <div class="top-bar">
+                <select id="modeSelect">
+                    <option value="text/plain">Plain Text</option>
+                    <option value="markdown">Markdown</option>
+                    <option value="text/html">HTML</option>
+                    <option value="css">CSS</option>
+                    <option value="javascript">Javascript</option>
+                    <option value="python">Python</option>
+                </select>
+                <label><input type="checkbox" id="wrapToggle" checked> Line Wrap</label>
+                <label><input type="checkbox" id="darkToggle" checked> Dark Mode</label>
+            </div>
+            <div class="find-replace">
+                <input type="text" id="findInput" placeholder="Find">
+                <input type="text" id="replaceInput" placeholder="Replace">
+                <label><input type="checkbox" id="regexToggle"> Regex</label>
+                <label><input type="checkbox" id="selectionToggle"> In Selection</label>
+                <button id="findBtn" type="button">Find</button>
+                <button id="replaceBtn" type="button">Replace</button>
+                <button id="replaceAllBtn" type="button">Replace All</button>
+            </div>
+            <textarea id="editor"></textarea>
+            <div class="status-bar" id="statusBar"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Jeff Haskin</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.9/lib/codemirror.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.9/mode/markdown/markdown.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.9/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.9/mode/xml/xml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.9/mode/css/css.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.9/mode/javascript/javascript.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.9/mode/python/python.js"></script>
+    <script src="../../static/tools_code-editor.js"></script>
+</body>
+</html>
