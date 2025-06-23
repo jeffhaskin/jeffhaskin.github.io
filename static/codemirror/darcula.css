@@ -22,7 +22,10 @@
 .cm-s-darcula span.cm-link { color: #CC7832; }
 .cm-s-darcula span.cm-atom { color: #CC7832; }
 .cm-s-darcula span.cm-error { color: #BC3F3C; }
-.cm-s-darcula span.cm-tag { color: #629755; font-weight: bold; font-style: italic; text-decoration: underline; }
+.cm-s-darcula span.cm-tag {
+  color: #629755;
+  font-weight: bold;
+}
 .cm-s-darcula span.cm-attribute { color: #6897bb; }
 .cm-s-darcula span.cm-qualifier { color: #6A8759; }
 .cm-s-darcula span.cm-bracket { color: #A9B7C6; }
