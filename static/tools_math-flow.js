@@ -12,6 +12,7 @@ window.addEventListener('DOMContentLoaded', () => {
     Handle,
     Position
   } = window.ReactFlow;
+  const { useCallback } = React;
 
   const initialNodes = [];
   const initialEdges = [];
