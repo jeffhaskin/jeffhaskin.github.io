@@ -6,3 +6,6 @@ Policy:
 - CSS and Javascript files go in the `/static` folder.
 - Tool pages go in the `/tools/tool_pages` folder.
 - Currently, the nav bar should only have the following options: Home, Tools, Portfolio, Resume, Posts
+
+
+Files named `.DS_Store` can be deleted wherever they're encountered. They're an artifact of the MacOS file system and don't matter.
