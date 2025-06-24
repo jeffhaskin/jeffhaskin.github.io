@@ -13,6 +13,8 @@ window.addEventListener('DOMContentLoaded', () => {
     Position
   } = window.ReactFlow;
 
+  const { useCallback } = React;
+
   const initialNodes = [];
   const initialEdges = [];
 
@@ -183,5 +185,10 @@ window.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  ReactDOM.render(React.createElement(Flow), document.getElementById('root'));
+  const rootEl = document.getElementById('root');
+  if (ReactDOM.createRoot) {
+    ReactDOM.createRoot(rootEl).render(React.createElement(Flow));
+  } else {
+    ReactDOM.render(React.createElement(Flow), rootEl);
+  }
 });
