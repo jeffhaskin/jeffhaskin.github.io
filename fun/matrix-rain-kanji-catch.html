@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Kanji Rain - Enhanced</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #000;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+        }
+        #matrix-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #title {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: #0f0;
+            font-size: 24px;
+            text-shadow: 0 0 10px #0f0;
+            letter-spacing: 4px;
+            z-index: 10;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+        #instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: #0a0;
+            font-size: 16px;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        #score-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #0f0;
+            font-size: 20px;
+            text-shadow: 0 0 5px #0f0;
+            z-index: 10;
+            pointer-events: none;
+        }
+        #score-label {
+            font-size: 16px;
+            opacity: 0.7;
+        }
+        #score-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        #high-score {
+            margin-top: 5px;
+            font-size: 16px;
+            opacity: 0.7;
+        }
+        #game-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #0f0;
+            font-size: 24px;
+            text-align: center;
+            text-shadow: 0 0 10px #0f0;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="matrix-container">
+        <div id="title">MATRIX KANJI RAIN</div>
+        <div id="score-container">
+            <div id="score-label">SCORE</div>
+            <div id="score-value">0</div>
+            <div id="high-score">HIGH SCORE: 0</div>
+        </div>
+        <canvas id="matrix"></canvas>
+        <div id="instructions">Move your cursor to influence the rain</div>
+        <div id="game-message"></div>
+    </div>
+    <script>
+        // --- Configuration ---
+        const CHARACTER_CHANGE_INTERVAL = 200; // Milliseconds (1000ms = 1s). 200ms = 1/5th second.
+        // ---------------------
+
+        // Canvas setup
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        // Set canvas to full window size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        // Kanji characters
+        const kanji = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンガギグゲゴザジズゼゾダヂヅデドバビブベボパピプペポドレアリスメルヒキサヨナホヘチツテトヌネノオクムユルヲン".split("");
+        // Matrix characters array
+        const chars = [];
+        const fontSize = 16;
+        const columns = Math.floor(canvas.width / (fontSize * 0.7)); // More columns for denser rain
+        // Mouse position
+        const mouse = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 120
+        };
+        // Game variables
+        let score = 0;
+        let highScore = 0;
+        let lastScoreUpdate = 0;
+        let currentChar = null;
+        let gameMessage = document.getElementById('game-message');
+        // DOM elements
+        const scoreValue = document.getElementById('score-value');
+        const highScoreElement = document.getElementById('high-score');
+        // Track mouse position
+        canvas.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+        // Character class
+        class Char {
+            constructor(x, y, speed) {
+                this.x = x;
+                this.y = y;
+                this.speed = speed;
+                this.value = kanji[Math.floor(Math.random() * kanji.length)];
+                this.brightness = Math.random() * 50 + 200; // Brighter characters
+                this.trailLength = Math.floor(Math.random() * 10) + 3; // Shorter trails
+                this.trail = [];
+                this.trailInterval = Math.random() * 3 + 2; // How often to add to trail
+                this.trailCounter = 0;
+                this.suspendedTime = 0;
+                this.isSuspended = false;
+                this.suspensionStartTime = 0;
+                this.lastChangeTime = Date.now(); // Track last character change time
+                this.reset();
+            }
+            reset() {
+                this.y = Math.random() * -canvas.height;
+                this.speed = Math.random() * 5 + 3;
+                this.brightness = Math.random() * 50 + 200;
+                this.trailLength = Math.floor(Math.random() * 10) + 3;
+                this.trail = [];
+                this.trailCounter = 0;
+                this.suspendedTime = 0;
+                this.isSuspended = false;
+                this.suspensionStartTime = 0;
+                this.lastChangeTime = Date.now(); // Reset change timer on reset
+            }
+            update() {
+                 const now = Date.now(); // Get current time for efficiency
+
+                // Add current position to trail at intervals (sparsely)
+                this.trailCounter++;
+                if (this.trailCounter >= this.trailInterval) {
+                    this.trail.push({x: this.x, y: this.y, brightness: this.brightness});
+                    this.trailCounter = 0;
+                }
+                // Remove old trail positions
+                if (this.trail.length > this.trailLength) {
+                    this.trail.shift();
+                }
+                // Calculate distance to mouse
+                const dx = this.x - mouse.x;
+                const dy = this.y - mouse.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                // Check if character is being suspended
+                if (distance < mouse.radius && this.y < mouse.y) {
+                    if (!this.isSuspended) {
+                        this.isSuspended = true;
+                        this.suspensionStartTime = now; // Use 'now'
+                        // Set this as the current character if none is set
+                        if (!currentChar) {
+                            currentChar = this;
+                            showGameMessage("Keep it up!");
+                        }
+                    }
+                    // Only update score if this is the current character
+                    if (currentChar === this) {
+                        this.suspendedTime = now - this.suspensionStartTime; // Use 'now'
+                        const currentScore = Math.floor(this.suspendedTime / 100);
+                        // Update score only if it's higher than displayed score
+                        if (currentScore > score) {
+                            score = currentScore;
+                            scoreValue.textContent = score;
+                            // Update high score if needed
+                            if (score > highScore) {
+                                highScore = score;
+                                highScoreElement.textContent = `HIGH SCORE: ${highScore}`;
+                            }
+                        }
+                    }
+                    // Apply suspension force
+                    const angle = Math.atan2(dy, dx);
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    this.x += Math.cos(angle) * force * 6;
+                    this.y += Math.sin(angle) * force * 6;
+                } else {
+                    // Character is no longer suspended
+                    if (this.isSuspended) {
+                        this.isSuspended = false;
+                        // If this was the current character, clear it
+                        if (currentChar === this) {
+                            currentChar = null;
+                            showGameMessage("Try to catch another one!");
+                        }
+                    }
+                }
+                // Move character down normally
+                this.y += this.speed;
+                // Reset if off screen
+                if (this.y > canvas.height + 50) {
+                    this.reset();
+                }
+
+                // --- Character Change Logic ---
+                // Change character based on the global interval
+                if (now - this.lastChangeTime > CHARACTER_CHANGE_INTERVAL) {
+                     // Ensure we don't get the same character again immediately
+                    let newValue;
+                    do {
+                        newValue = kanji[Math.floor(Math.random() * kanji.length)];
+                    } while (newValue === this.value && kanji.length > 1); // Avoid infinite loop if only one kanji
+
+                    this.value = newValue;
+                    this.lastChangeTime = now; // Update the last change time
+                }
+                // -------------------------------
+            }
+            draw() {
+                // Draw trail (dimmer than head character)
+                for (let i = 0; i < this.trail.length; i++) {
+                    const point = this.trail[i];
+                    const alpha = i / this.trail.length;
+                    const brightness = Math.floor(point.brightness * 0.4); // Much dimmer
+                    ctx.fillStyle = `rgb(0, ${brightness}, 0)`;
+                    ctx.font = `${fontSize}px monospace`;
+                    ctx.fillText(this.value, point.x, point.y);
+                }
+                // Draw head character (bright green)
+                ctx.fillStyle = `rgb(0, ${Math.floor(this.brightness)}, 0)`;
+                ctx.font = `${fontSize}px monospace`;
+                ctx.fillText(this.value, this.x, this.y);
+                // Highlight the current suspended character
+                if (this === currentChar) {
+                    ctx.strokeStyle = 'rgba(0, 255, 0, 0.7)';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(this.x - 2, this.y - fontSize, fontSize, fontSize);
+                }
+            }
+        }
+        // Show game message
+        function showGameMessage(text) {
+            gameMessage.textContent = text;
+            gameMessage.style.opacity = 1;
+            setTimeout(() => {
+                gameMessage.style.opacity = 0;
+            }, 2000);
+        }
+        // Initialize characters
+        function init() {
+            chars.length = 0;
+            for (let i = 0; i < columns; i++) {
+                const x = i * fontSize * 0.7; // Closer spacing for denser rain
+                const y = Math.random() * -canvas.height;
+                const speed = Math.random() * 5 + 3;
+                chars.push(new Char(x, y, speed));
+                // Add extra characters for even denser rain
+                if (Math.random() > 0.7) {
+                    const extraY = Math.random() * -canvas.height * 2;
+                    chars.push(new Char(x, extraY, speed));
+                }
+            }
+        }
+        // Animation loop
+        function animate() {
+            // Semi-transparent overlay for trail effect
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Update and draw characters
+            chars.forEach(char => {
+                char.update();
+                char.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        // Start the animation
+        init();
+        animate();
+        // Load high score from localStorage if available
+        window.addEventListener('load', () => {
+            const savedHighScore = localStorage.getItem('matrixKanjiHighScore');
+            if (savedHighScore) {
+                highScore = parseInt(savedHighScore);
+                highScoreElement.textContent = `HIGH SCORE: ${highScore}`;
+            }
+        });
+        // Save high score to localStorage when page is unloaded
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('matrixKanjiHighScore', highScore.toString());
+        });
+    </script>
+</body>
+</html>
